@@ -51,6 +51,9 @@ namespace MusicStore.Services.Implementation
                 if (DateTime.Now > concert.DateEvent)
                     throw new InvalidOperationException($"No se puede comprar tickets para el concierto {concert.Title} porque ya es pasado.");
 
+                if (concert.Finalized)
+                    throw new InvalidOperationException($"No se puede comprar tickets para el concierto con Id {request.ConcertId} porque ya finalizó.");
+
                 entity.Total = entity.Quantity * concert.UnitPrice;
 
                 await repository.AddAsync(entity);

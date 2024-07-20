@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mydb
+    user: '0:0'
+    ports:
+      - 2590:1433
+    environment:
+      - SA_PASSWORD=MC1admin
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+    volumes:
+      - sqldata:/var/opt/mssql
+  app:
+    build:
+      dockerfile: "MusicStore.Api/Dockerfile"
+    container_name: musicstoreapi
+    environment:
+      - ASPNETCORE_KESTREL__ENDPOINTS__HTTP__URL=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - appdata:/app
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+
+volumes:
+  appdata:
+    driver: local
+  sqldata:
+    driver: local

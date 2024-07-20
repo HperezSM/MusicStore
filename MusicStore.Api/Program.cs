@@ -72,7 +72,7 @@ builder.Services.AddAuthentication(x =>
 }).AddJwtBearer(x =>
 {
     var key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:JWTKey"] ??
-        throw new InvalidOperationException("JWT Key no está configurada"));
+        throw new InvalidOperationException("JWT Key no estï¿½ configurada"));
     x.TokenValidationParameters = new()
     {
         ValidateIssuer = false,
@@ -100,7 +100,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
 
-builder.Services.AddTransient<IFileStorage, FileStorageAzure>();
+builder.Services.AddTransient<IFileStorage, FileStorageLocal>();
 
 //Registering healthchecks
 builder.Services.AddHealthChecks()
@@ -139,13 +139,13 @@ app.MapReports();
 app.MapControllers();
 
 //Scope
-using (var scope = app.Services.CreateScope())
+await using (var scope = app.Services.CreateAsyncScope())
 {
     //ejecuto migraciones pendientes
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await db.Database.MigrateAsync();
 
-    //creando usuario admin a través de data semilla o seed data
+    //creando usuario admin a travï¿½s de data semilla o seed data
     await UserDataSeeder.Seed(scope.ServiceProvider);
 }
 

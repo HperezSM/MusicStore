@@ -34,7 +34,7 @@ namespace MusicStore.Api.Controllers
         }
 
         [HttpGet("ListSales")]
-        public async Task<IActionResult> Get(string email, string title, [FromQuery]PaginationDto pagination)
+        public async Task<IActionResult> Get(string email, string? title, [FromQuery]PaginationDto pagination)
         {
             var response = await service.GetAsync(email, title, pagination);
             return response.Success ? Ok(response) : BadRequest(response);

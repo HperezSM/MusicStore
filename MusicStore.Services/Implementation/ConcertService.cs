@@ -61,9 +61,10 @@ namespace MusicStore.Services.Implementation
         public async Task<BaseResponseGeneric<int>> AddAsync(ConcertRequestDto request)
         {
             var response = new BaseResponseGeneric<int>();
+            Concert entity = new();
             try
             {
-                var entity = mapper.Map<Concert>(request);
+                entity = mapper.Map<Concert>(request);
                 if(request.Image != null)
                 {
                     using (var memoryStream = new MemoryStream())
@@ -80,6 +81,7 @@ namespace MusicStore.Services.Implementation
             }
             catch (Exception ex)
             {
+                await fileStorage.DeleteFile(entity.ImageUrl ?? string.Empty, container);
                 response.ErrorMessage = "Ocurrió un error al insertar la información.";
                 logger.LogError(ex, "{ErrorMessage} {Message}", response.ErrorMessage, ex.Message);
             }
